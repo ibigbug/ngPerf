@@ -1,0 +1,24 @@
+{
+  "name": "ngPerf",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ibigbug/ngPerf",
+  "description": "AngularJS performance hint tool.",
+  "main": "index.js",
+  "keywords": [
+    "angularjs",
+    "perf",
+    "ng",
+    "performance"
+  ],
+  "authors": [
+    "Yuwei Ba <i@xiaoba.me>"
+  ],
+  "license": "'",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
