@@ -24,6 +24,8 @@
     this.modules.map(function(mod) {
       if (self.options.oneTime)
         ngPerf.setupOneTime(mod)
+      if (self.options.timeout)
+        ngPerf.setupTimeout(mod)
       // TODO: implements other options
     })
   }
@@ -81,7 +83,7 @@
     }])
   }
 
-  ngPerf.setupExplictApply = function () {
+  ngPerf.setupExplictApply = function (mod) {
     throw new Error('NotImplementedError')
   }
 
@@ -89,8 +91,33 @@
     throw new Error('NotImplementedError')
   }
 
-  ngPerf.setupTimeout = function () {
-    throw new Error('NotImplementedError')
+  ngPerf.setupTimeout = function (mod) {
+    mod.config(['$provide', function($provide) {
+      $provide.decorator('$timeout', ['$delegate', function($delegate) {
+        var timeoutWrap = function () {
+          var fn = arguments[0]
+          var delay = arguments[1]
+          var invokeApply = arguments[2]
+          if (!angular.isFunction(fn)) {
+            invokeApply = delay;
+            delay = fn;
+            fn = noop;
+          }
+
+          $delegate.apply(this, arguments)
+          var skipApply = (angular.isDefined(invokeApply) && !invokeApply)
+          if (!skipApply && delay == 0) {
+            var line = getLineNo()
+            console.log(line)
+            var logger = ngPerf.log('TIMEOUT')
+            console.warn(logger(formatString('calling $timeout with delay 0, considering `$evalAsync()`?')))
+          }
+        }
+
+        angular.extend(timeoutWrap, $delegate)
+        return timeoutWrap
+      }])
+    }])
   }
 
   ngPerf.log = function (type) {
