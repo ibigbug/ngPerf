@@ -1,3 +1,4 @@
+/* jshint asi: true */
 (function(angular){
   window.ngPerf = ngPerf
 
@@ -26,7 +27,8 @@
         ngPerf.setupOneTime(mod)
       if (self.options.timeout)
         ngPerf.setupTimeout(mod)
-      // TODO: implements other options
+      if (self.options.explictApply)
+        ngPerf.setupExplictApply(mod)
     })
   }
 
@@ -44,7 +46,7 @@
           return function () {
             var result = interpolateFn.apply(this, arguments)
             var exp = args[0].replace('{{', '').replace('}}', '').trim()
-            if (exp.indexOf('::') == 0)
+            if (exp.indexOf('::') === 0)
               return result
 
             var hit = cache[exp]
@@ -84,7 +86,21 @@
   }
 
   ngPerf.setupExplictApply = function (mod) {
-    throw new Error('NotImplementedError')
+    mod.config(['$provide', function($provide){
+      $provide.decorator('$rootScope', ['$delegate', function ($delegate) {
+        var $apply_ = $delegate.constructor.prototype.$apply
+
+        $delegate.constructor.prototype.$apply = function () {
+          $apply_.apply(this, arguments)
+          if (this !== $delegate) {
+            var logger = ngPerf.log('EXPLICT-APPLY')
+            console.warn(logger(formatString('Calling `$apply()` explictly on $scope::$id{0}, considering using `$digest()` ?', this.$id)))
+          }
+        }
+
+        return $delegate
+      }])
+    }])
   }
 
   ngPerf.setupExplictWatch = function () {
@@ -106,7 +122,7 @@
 
           $delegate.apply(this, arguments)
           var skipApply = (angular.isDefined(invokeApply) && !invokeApply)
-          if (!skipApply && delay == 0) {
+          if (!skipApply && delay === 0) {
             var line = getLineNo()
             console.log(line)
             var logger = ngPerf.log('TIMEOUT')
@@ -130,7 +146,7 @@
 
   function getLineNo () {
     // http://stackoverflow.com/questions/1340872/how-to-get-javascript-caller-function-line-number-how-to-get-javascript-caller
-    var caller_line = (new Error).stack.split('\n')[4]
+    var caller_line = (new Error()).stack.split('\n')[4]
     var index = caller_line.indexOf('at ')
     var clean = caller_line.slice(index + 2, caller_line.length)
 
