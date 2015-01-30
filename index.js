@@ -5,7 +5,6 @@
   var defualts = {
     oneTime: true,
     explictApply: true,
-    explictWatch: true,
     timeout: true
   }
 
@@ -101,10 +100,6 @@
         return $delegate
       }])
     }])
-  }
-
-  ngPerf.setupExplictWatch = function () {
-    throw new Error('NotImplementedError')
   }
 
   ngPerf.setupTimeout = function (mod) {

@@ -8,7 +8,6 @@ ngPerf
 * Use one-time binding as possible
 * `$scope.$apply()` will spread from `$rootScope` among **ALL** scopes
 * `$timeout()` will call `$rootScope.$apply()`, it's expensive
-* Do you really need a `$watcher` ?
 
 # Introduction
 
@@ -42,7 +41,6 @@ var mod = angular.module('a.module')
 var options = {
   oneTime: true,
   explictApply: true,
-  explictWatch: true,
   timeout: true
 }
 
@@ -57,7 +55,6 @@ var ng_perf = new ngPerf(['a.module.name', mod], options)
 * options:
   - oneTime: dig out potencial on-time-binding, default `true`
   - explictApply: monitering explict `$apply` calling, default `true`
-  - explictWatch: TODO
   - timeout: monitering improper `$timeout`
 
 ## ngPerf.setup()
