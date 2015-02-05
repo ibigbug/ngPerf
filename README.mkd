@@ -57,9 +57,17 @@ var ng_perf = new ngPerf(['a.module.name', mod], options)
   - explictApply: monitering explict `$apply` calling, default `true`
   - timeout: monitering improper `$timeout`
 
-## ngPerf.setup()
+## ngPerf.prototype.setup()
 
 * Enable ngPerf monitering
+
+## ngPerf.setupWatherMonitor()
+
+* Enable watcher count monitor
+
+## ngPerf.setupScopeMonitor()
+
+* Enable scope count monitor
 
 # License
 
