@@ -120,8 +120,6 @@
           $delegate.apply(this, arguments)
           var skipApply = (angular.isDefined(invokeApply) && !invokeApply)
           if (!skipApply && delay === 0) {
-            var line = getLineNo()
-            console.log(line)
             var logger = ngPerf.log('TIMEOUT')
             console.warn(logger(formatString('calling $timeout with delay 0, considering `$evalAsync()`?')))
           }
@@ -138,7 +136,6 @@
     var m = new Monitor('$scope count')
     m.show()
     window.setInterval(function(){
-      console.log(countScope())
       m.data(countScope() / 1000 * 100)
     }, 500)
 
@@ -155,7 +152,6 @@
     })
     m.show()
     window.setInterval(function(){
-      console.log(countWatcher())
       m.data(countWatcher() / 10000 * 100)
     }, 500)
 
